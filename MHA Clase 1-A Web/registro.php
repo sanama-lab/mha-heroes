@@ -4,13 +4,13 @@ require_once 'db.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nick = $_POST['usuario'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $email = $_POST['email'];
+    $gmail = $_POST['gmail'];
     $nombre = $_POST['nombre'];
     
     try {
         // Insertar en tabla cuenta
         $stmt = $pdo->prepare("INSERT INTO cuenta (nusuario, contraseña, gmail) VALUES (?, ?, ?)");
-        $stmt->execute([$nombre, $password, $email]);
+        $stmt->execute([$nombre, $password, $gmail]);
         $idcuenta = $pdo->lastInsertId();
         
         // Insertar en tabla usuario
