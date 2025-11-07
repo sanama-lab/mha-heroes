@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <p style="color: red;"><?php echo $error; ?></p>
         <?php endif; ?>
         <div class="back-btn">
-        <a href="index.html">← Regresar a la página principal</a>
+        <a href="index.php">← Regresar a la página principal</a>
         </div>
     </main>
 

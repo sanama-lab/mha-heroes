@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && password_verify($password, $user['pass'])) {
             $_SESSION['user_id'] = $user['idusuario'];
             $_SESSION['nick'] = $user['nick'];
-            header('Location: index.html');
+            header('Location: index.php');
             exit;
         } else {
             $error = 'Usuario o contraseña incorrectos';
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <div class="back-btn">
-            <a href="index.html">← Regresar a la página principal</a>
+            <a href="index.php">← Regresar a la página principal</a>
         </div>
     </main>
 
