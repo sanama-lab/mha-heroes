@@ -13,7 +13,13 @@
         <img src="download-removebg-preview.png" alt="Logo de la U.A." class="logo">
         <h1>Bienvenidos a la Clase 1-A</h1>
         <p>El hogar de los futuros heroes.</p>
-
+        <h1><?php
+            if (isset($_COOKIE["email"])) {
+                echo "Hola! " . $_COOKIE["email"];
+            } else {
+                echo "NO INICIO SESION";
+            }
+        ?></h1>
         <div class="auth-buttons">
         <a href="login.php" class="btn-login">Iniciar sesión</a>
         <a href="registro.php" class="btn-register">Registrarse</a>
