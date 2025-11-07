@@ -14,8 +14,8 @@
         <h1>Bienvenidos a la Clase 1-A</h1>
         <p>El hogar de los futuros heroes.</p>
         <h1><?php
-            if (isset($_COOKIE["gmail"])) {
-                echo "Hola! " . $_COOKIE["gmail"];
+            if (isset($_COOKIE["email"])) {
+                echo "Hola! " . $_COOKIE["email"];
             } else {
                 echo "NO INICIO SESION";
             }
