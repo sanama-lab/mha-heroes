@@ -1,6 +1,6 @@
 <?php
 require 'db.php';
-sessoin_start();
+session_start();
 
 ?>
 
@@ -10,6 +10,7 @@ sessoin_start();
 <head>
     <meta charset="UTF-8">
     <title>Foro Multimedia</title>
+    <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
 
