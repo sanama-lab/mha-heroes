@@ -1,3 +1,10 @@
+<?php
+require 'db.php';
+sessoin_start();
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

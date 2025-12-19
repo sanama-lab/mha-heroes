@@ -28,8 +28,11 @@ session_start();
             <div class="auth-buttons">
                 <a href="login.php" class="btn-login">Iniciar sesión</a>
                 <a href="registro.php" class="btn-register">Registrarse</a>
-            </div>
+                </div>
         <?php endif; ?>
+        <div class="auth-buttons">
+             <a href="foro.php" class="btn-register">foro</a>
+             </div>
     </header>
 
     <nav class="topnav">
