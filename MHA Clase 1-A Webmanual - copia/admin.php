@@ -3,7 +3,8 @@ require 'db.php';
 session_start();
 if (($_SESSION['tipousuario']) != "admin"):
     header("location:index.php");
-endif:
+endif;
 
 ?>
-select nombre ,id,mail,tipousuario
+<select nombre, id, mail, tipousuario>
+    

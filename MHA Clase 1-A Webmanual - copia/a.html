@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Administrativo - MHA</title>
+    <link rel="stylesheet" href="estilos.css">   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<header>
+    <h1>ADMIN PANEL</h1>
+</header>
+
+<main>
+    <section>
+        <h2>LISTA DE USUARIOS REGISTRADOS</h2>
+        
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rango</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>01</td>
+                    <td>Izuku Midoriya</td>
+                    <td>deku@ua.com</td>
+                    <td><span class="badge-rango">ADMIN</span></td>
+                    <td>
+                        <button class="btn-mha btn-subir">Aumentar</button>
+                        <button class="btn-mha btn-bajar">Bajar</button>
+                        <button class="btn-mha btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>02</td>
+                    <td>Shoto Todoroki</td>
+                    <td>shoto@ua.com</td>
+                    <td><span class="badge-rango">USER</span></td>
+                    <td>
+                        <button class="btn-mha btn-subir">Aumentar</button>
+                        <button class="btn-mha btn-bajar">Bajar</button>
+                        <button class="btn-mha btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer>
+    <p>PLUS ULTRA - Sistema de Gestión de Héroes</p>
+</footer>
+
+</body>
+</html>
