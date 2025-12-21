@@ -22,6 +22,10 @@ session_start();
             <h1><?php echo ($_SESSION['rol']); ?></h1>
             <div class="auth-buttons">
                 <a href="logout.php" class="btn-logout">Cerrar sesión</a>
+                <?php if (($_SESSION['rol']) == "admin"):?>
+                <a href="admin.php" class="btn-admin">Panel Admin</a>
+                <?php endif; ?>
+                <a href="foro.php" class="btn-register">foro</a>
             </div>
         <?php else: ?>
             <h1>NO INICIO SESION</h1>
@@ -30,9 +34,7 @@ session_start();
                 <a href="registro.php" class="btn-register">Registrarse</a>
                 </div>
         <?php endif; ?>
-        <div class="auth-buttons">
-             <a href="foro.php" class="btn-register">foro</a>
-             </div>
+        
     </header>
 
     <nav class="topnav">
