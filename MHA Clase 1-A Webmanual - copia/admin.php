@@ -3,6 +3,7 @@
 require 'db.php';
 session_start();
 
+
 if (!isset($_SESSION['rol']) || ($_SESSION['rol']) != "admin"){
 
     header("location:index.php");
@@ -24,9 +25,11 @@ $resultado = $conn->query($query);
 <body>
 <header>
     <h1>ADMIN PANEL</h1>
+    
     <div class="auth-buttons">
         <a href="index.php" > < inicio</a>
     </div>
+
 </header>
 
 <main>
@@ -40,23 +43,36 @@ $resultado = $conn->query($query);
                     <th>Nombre</th>
                     <th>Email</th>
                     <th>Rango</th>
-                    <th>Acciones</th>
+                    <th style="padding: 5px;">Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody >
                 <?php while($row = $resultado->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo $row['idusuario']; ?></td>
-                    <td><?php echo htmlspecialchars($row['nombre']); ?></td>
-                    <td><?php echo htmlspecialchars($row['mail']); ?></td>
+                    <?php if ($row['tipousuario'] !== 'admin') { ?>
+                <tr >
+                    <td style="padding: 5px;"><?php echo $row['idusuario']; ?></td>
+                    <td style="padding: 5px;"><?php echo htmlspecialchars($row['nombre']); ?></td> 
+                    <td style="padding: 5px;"><?php echo htmlspecialchars($row['mail']); ?></td>
                     <td>
                         <span class="<?php echo ($row['tipousuario'] == 'admin') ? 'admin-tag' : ''; ?>">
                             <?php echo strtoupper($row['tipousuario']); ?>
                         </span>
                     </td>
-                    <td>
-                        <!-- Aquí puedes agregar botones para el cambiar a moderador (viceversa) o eliminar los usuarios -->
-                </tr>
+                    <td style="padding: 5px;">
+                        <a href="cambiar_rol.php?id=<?php echo $row['idusuario']; ?>&rol=moderador" 
+                           style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.5); border-radius: 7px; text-decoration: none;">
+                           Hacer Moderador
+                        </a>
+                        <a href="cambiar_rol.php?id=<?php echo $row['idusuario']; ?>&rol=comun" 
+                           style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;">
+                           Hacer Usuario
+                        </a>
+                        <a href="eliminar_usuario.php?id=<?php echo $row['idusuario']; ?>" 
+                           style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;">
+                           hacer polvo
+                        </a>
+                </tr> 
+                   <?php } ?>
                 <?php endwhile; ?>
             </tbody>
         </table>
