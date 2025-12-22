@@ -2,60 +2,80 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Administrativo - MHA</title>
-    <link rel="stylesheet" href="estilos.css">   
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foro Multimedia</title>
+    <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-<header>
-    <h1>ADMIN PANEL</h1>
-</header>
 
-<main>
-    <section>
-        <h2>LISTA DE USUARIOS REGISTRADOS</h2>
-        
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Rango</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>01</td>
-                    <td>Izuku Midoriya</td>
-                    <td>deku@ua.com</td>
-                    <td><span class="badge-rango">ADMIN</span></td>
-                    <td>
-                        <button class="btn-mha btn-subir">Aumentar</button>
-                        <button class="btn-mha btn-bajar">Bajar</button>
-                        <button class="btn-mha btn-eliminar">Eliminar</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>02</td>
-                    <td>Shoto Todoroki</td>
-                    <td>shoto@ua.com</td>
-                    <td><span class="badge-rango">USER</span></td>
-                    <td>
-                        <button class="btn-mha btn-subir">Aumentar</button>
-                        <button class="btn-mha btn-bajar">Bajar</button>
-                        <button class="btn-mha btn-eliminar">Eliminar</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-</main>
+    <header>
+        <div class="header-content">
+            <h1>Foro Multimedia</h1>
+            <form id="search-form">
+                <input type="text" placeholder="Buscar contenido..." aria-label="Buscar">
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+    </header>
 
-<footer>
-    <p>PLUS ULTRA - Sistema de Gestión de Héroes</p>
-</footer>
+    <main class="main-container">
+        <section id="publish-section">
+            <h3>Publicar nuevo post</h3>
+            <form id="post-form">
+                <textarea placeholder="¿Qué quieres compartir?" rows="3"></textarea>
+                
+                <div class="upload-group">
+                    <label for="file-upload">Adjuntar audio o video:</label>
+                    <input type="file" id="file-upload" accept="audio/mp3, video/mp4">
+                </div>
+                
+                <button type="submit" class="btn-publish">Publicar</button>
+            </form>
+        </section>
+
+        <section id="feed">
+            <h2>Feed Reciente</h2>
+
+            <article class="post">
+                <header class="post-header">
+                    <span class="user-tag">@usuario_cine</span>
+                    <small class="post-time">hace 2 minutos</small>
+                </header>
+                <div class="post-content">
+                    <p>Miren este video que grabé hoy:</p>
+                    <video controls>
+                        <source src="video-ejemplo.mp4" type="video/mp4">
+                        Tu navegador no soporta la reproducción de videos.
+                    </video>
+                </div>
+                <nav class="post-actions">
+                    <button class="btn-edit">Editar</button>
+                    <button class="btn-delete">Eliminar</button>
+                </nav>
+            </article>
+
+            <article class="post">
+                <header class="post-header">
+                    <span class="user-tag">@melomano_99</span>
+                    <small class="post-time">hace 1 hora</small>
+                </header>
+                <div class="post-content">
+                    <p>Escuchen este podcast:</p>
+                    <audio controls>
+                        <source src="audio-ejemplo.mp3" type="audio/mpeg">
+                        Tu navegador no soporta la reproducción de audio.
+                    </audio>
+                </div>
+                <nav class="post-actions">
+                    <button class="btn-edit">Editar</button>
+                    <button class="btn-delete">Eliminar</button>
+                </nav>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Foro Multimedia</p>
+    </footer>
 
 </body>
 </html>
