@@ -4,7 +4,7 @@ require 'db.php';
 session_start();
 
 
-if (!isset($_SESSION['rol']) || ($_SESSION['rol']) != "admin"){
+if (!isset($_SESSION['rol']) || ($_SESSION['rol']) != "admin" && ($_SESSION['rol']) != "moderador" ){
 
     header("location:index.php");
     exit();
@@ -59,6 +59,7 @@ $resultado = $conn->query($query);
                         </span>
                     </td>
                     <td style="padding: 5px;">
+                        <?php if ($_SESSION['rol'] !== 'moderador') { ?>
                         <a href="cambiar_rol.php?id=<?php echo $row['idusuario']; ?>&rol=moderador" 
                            style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.5); border-radius: 7px; text-decoration: none;">
                            Hacer Moderador
@@ -67,6 +68,7 @@ $resultado = $conn->query($query);
                            style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;">
                            Hacer Usuario
                         </a>
+                        <?php } ?>
                         <a href="eliminar_usuario.php?id=<?php echo $row['idusuario']; ?>" 
                            style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;">
                            hacer polvo

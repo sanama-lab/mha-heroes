@@ -2,8 +2,17 @@
 require 'db.php';
 session_start();
 
-?>
 
+if (!isset($_SESSION['id'])){
+
+    header("location:index.php");
+    exit();
+}
+
+$query = "SELECT idcontenido, titulo, palabrakey, categoria, creaderpost, fechapublicacion, fechaact FROM contenido order BY fechapublicacion DESC";
+$resultado = $conn->query($query);
+
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -15,73 +24,71 @@ session_start();
 <body>
 
     <header>
-        <h1>Foro Multimedia</h1>
-        <form id="search-form">
-            <input type="text" placeholder="Buscar contenido..." aria-label="Buscar">
-            <button type="submit">Buscar</button>
-        </form>
+    <header>
+        <div class="header-content">
+            <h1>Foro Multimedia</h1>
+            <form id="search-form">
+                <input type="text" placeholder="Buscar contenido..." aria-label="Buscar">
+                <button type="submit">Buscar</button>
+            </form>
     </header>
 
-    <hr>
 
-    <section id="publish-section">
-        <h3>Publicar nuevo post</h3>
-        <form id="post-form">
-            <textarea placeholder="¿Qué quieres compartir?" rows="3" cols="50"></textarea>
-            <br>
-            
-            <label for="file-upload">Adjuntar audio o video:</label>
-            <input type="file" id="file-upload" accept="audio/mp3, video/mp4">
-            
-            <br><br>
-            <button type="submit">Publicar</button>
-        </form>
-    </section>
+    <main class="main-container">
+        <section id="publish-section">
+            <h3>Publicar nuevo post</h3>
+            <form id="post-form">
+                <textarea placeholder="¿Qué quieres compartir?" rows="3"></textarea>
+                
+                <div class="upload-group">
+                    <label for="file-upload">Adjuntar audio o video:</label>
+                    <input type="file" id="file-upload" accept="audio/mp3, video/mp4">
+                </div>
+                
+                <button type="submit" class="btn-publish">Publicar</button>
+            </form>
 
-    <hr>
 
-    <main id="feed">
-        <h2>Feed</h2>
+        <section id="feed">
 
-        <article class="post">
-            <header>
-                <strong>@usuario_cine</strong> • <small>hace 2 minutos</small>
-            </header>
-            <p>Miren este video que grabé hoy:</p>
-            
-            <video width="320" height="240" controls>
-                <source src="video-ejemplo.mp4" type="video/mp4">
-                Tu navegador no soporta la reproducción de videos.
-            </video>
 
-            <nav>
-                <button>Editar</button>
-                <button>Eliminar</button>
-            </nav>
-        </article>
+            <article class="post">
+                <header class="post-header">
+                    <span class="user-tag">@usuario_cine</span>
+                    <small class="post-time">hace 2 minutos</small>
+                </header>
+                <div class="post-content">
+                    <p>Miren este video que grabé hoy:</p>
+                    <video controls>
+                        <source src="video-ejemplo.mp4" type="video/mp4">
+                        Tu navegador no soporta la reproducción de videos.
+                    </video>
+                </div>
+                <nav class="post-actions">
+                    <button class="btn-edit">Editar</button>
+                    <button class="btn-delete">Eliminar</button>
+                </nav>
 
-        <br>
 
-        <article class="post">
-            <header>
-                <strong>@melomano_99</strong> • <small>hace 1 hora</small>
-            </header>
-            <p>Escuchen este podcast:</p>
-            
-            <audio controls>
-                <source src="audio-ejemplo.mp3" type="audio/mpeg">
-                Tu navegador no soporta la reproducción de audio.
-            </audio>
-
-            <nav>
-                <button>Editar</button>
-                <button>Eliminar</button>
-            </nav>
-        </article>
+            <article class="post">
+                <header class="post-header">
+                    <span class="user-tag">@melomano_99</span>
+                    <small class="post-time">hace 1 hora</small>
+                </header>
+                <div class="post-content">
+                    <p>Escuchen este podcast:</p>
+                    <audio controls>
+                        <source src="audio-ejemplo.mp3" type="audio/mpeg">
+                        Tu navegador no soporta la reproducción de audio.
+                    </audio>
+                </div>
+                <nav class="post-actions">
+                    <button class="btn-edit">Editar</button>
+                    <button class="btn-delete">Eliminar</button>
+                </nav>
+            </article>
     </main>
-
-    <hr>
-    
+    </main>
     <footer>
         <p>© 2025 Foro Multimedia</p>
     </footer>
