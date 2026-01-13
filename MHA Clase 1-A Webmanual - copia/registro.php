@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 2. PREPARAR LA INSERCIÓN 
     // Usamos `` para asegurar que MySQL lea bien los nombres con espacios o ñ
-    $query = "INSERT INTO `usuario` (`nombre`, `mail`, `contraseña`) VALUES (?, ?, ?)";
+    $query = "INSERT INTO `usuario` (`nombre`, `mail`, `contrasena`) VALUES (?, ?, ?)";
     
     $stmt = $conn->prepare($query);
 

@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 2. Primero insertamos el POST para obtener su ID
     // NOTA: Ajusta esta consulta a todas tus columnas reales
-    $query_post = "INSERT INTO contenido (titulo, informacion, creadorpost, palabraskey, categoria, fechapublicacion) VALUES (?, ?, ?, ?, ?, NOW())";
+    $query_post = "INSERT INTO contenido (titulo, informacion, creadorpost, palabraskey, categoria, fechaact, fechapublicacion) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
     $stmt = $conn->prepare($query_post);
     $stmt->bind_param("ssiss", $titulo, $info, $creador, $palabras_clave, $categoria);
 

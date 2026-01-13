@@ -9,12 +9,47 @@ if (!isset($_SESSION['id'])){
     exit();
 }
 
-$query = "SELECT idcontenido, titulo, palabrakey, categoria, creaderpost, fechapublicacion, fechaact FROM contenido order BY fechapublicacion DESC";
+$query = "SELECT c.*, u.nombre as autor, cat.categ as categoria_nombre, i.img 
+          FROM contenido c
+          JOIN usuario u ON c.creadorpost = u.idusuario
+          JOIN categoria cat ON c.categoria = cat.idcategoria
+          LEFT JOIN imagen i ON c.idcontenido = i.cont
+          ORDER BY c.fechapublicacion DESC";
 $resultado = $conn->query($query);
 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = $_SESSION['user'];
+    $idpost  = $_POST['idpost'];
+    $mensaje   = $_POST['msgusuario'];
+
+    // 2. PREPARAR LA INSERCIÓN 
+    // Usamos `` para asegurar que MySQL lea bien los nombres con espacios o ñ
+    $query = "INSERT INTO `comentario` (`idpost`, `mensaje`,`creadorcom`, `fecha`) VALUES (?, ?, ?, now())";
+    
+    $stmt = $conn->prepare($query);
+
+    if ($stmt) {
+        $stmt->bind_param("iss", $idpost, $mensaje, $nombre);
+
+        // 3. EJECUTAR Y VERIFICAR
+        try {
+            if ($stmt->execute()) {
+                $mensaje = "✅ Registro exitoso. <a href='login.php'>Ir al Login</a>";
+            }
+        } catch (Exception $e) {
+            // Error común: correo duplicado
+            $mensaje = "❌ Error: El correo ya está registrado o hay un problema con la tabla.";
+        }
+        $stmt->close();
+    } else {
+        // Este error saldrá si la tabla 'usuario' realmente no existe
+        $mensaje = "❌ Error en la base de datos: " . $conn->error;
+    }
+}
 ?>
 
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +58,7 @@ $resultado = $conn->query($query);
 </head>
 <body>
 
-    <header>
+
     <header>
         <div class="header-content">
             <h1>Foro Multimedia</h1>
@@ -36,57 +71,46 @@ $resultado = $conn->query($query);
 
     <main class="main-container">
         <section id="publish-section">
-            <h3>Publicar nuevo post</h3>
-            <form id="post-form">
-                <textarea placeholder="¿Qué quieres compartir?" rows="3"></textarea>
-                
-                <div class="upload-group">
-                    <label for="file-upload">Adjuntar audio o video:</label>
-                    <input type="file" id="file-upload" accept="audio/mp3, video/mp4">
+            <?php while($post = $resultado->fetch_assoc()): ?>
+            <article class="post-card">
+                <div class="post-meta">
+                    Por <strong><?php echo htmlspecialchars($post['autor']); ?></strong> 
+                    el <?php echo date("d/m/Y H:i", strtotime($post['fechapublicacion'])); ?> | 
+                    <span class="categoria-badge"><?php echo htmlspecialchars($post['categoria_nombre']); ?></span>
                 </div>
-                
-                <button type="submit" class="btn-publish">Publicar</button>
-            </form>
 
+                <h2><?php echo htmlspecialchars($post['titulo']); ?></h2>
 
-        <section id="feed">
+                <?php if ($post['img']): ?>
+                    <img src="data:image/jpeg;base64,<?php echo base64_encode($post['img']); ?>" class="post-img">
+                <?php endif; ?>
 
+                <p style="margin-top: 15px;">
+                    <?php echo nl2br(htmlspecialchars($post['informacion'])); ?>
+                </p>
 
-            <article class="post">
-                <header class="post-header">
-                    <span class="user-tag">@usuario_cine</span>
-                    <small class="post-time">hace 2 minutos</small>
-                </header>
-                <div class="post-content">
-                    <p>Miren este video que grabé hoy:</p>
-                    <video controls>
-                        <source src="video-ejemplo.mp4" type="video/mp4">
-                        Tu navegador no soporta la reproducción de videos.
-                    </video>
+                <div class="post-meta" style="font-style: italic;">
+                    Palabras clave: <?php echo htmlspecialchars($post['palabraskey']); ?>
                 </div>
-                <nav class="post-actions">
-                    <button class="btn-edit">Editar</button>
-                    <button class="btn-delete">Eliminar</button>
-                </nav>
-
-
-            <article class="post">
-                <header class="post-header">
-                    <span class="user-tag">@melomano_99</span>
-                    <small class="post-time">hace 1 hora</small>
-                </header>
-                <div class="post-content">
-                    <p>Escuchen este podcast:</p>
-                    <audio controls>
-                        <source src="audio-ejemplo.mp3" type="audio/mpeg">
-                        Tu navegador no soporta la reproducción de audio.
-                    </audio>
+                <?php if ($_SESSION['rol'] === 'admin' || $_SESSION['rol'] === 'moderador'): ?>
+                <div class="post-actions">
+                    <a href="eliminar_foro.php?id=<?php echo $post['idcontenido']; ?>" class="delete-btn" 
+                       onclick="return confirm('¿Estás seguro de que deseas eliminar este post?');">
+                       Eliminar Post
+                    </a>
                 </div>
-                <nav class="post-actions">
-                    <button class="btn-edit">Editar</button>
-                    <button class="btn-delete">Eliminar</button>
-                </nav>
+
+                <?php endif; ?>
+                <div class="comment-section">
+                    <h3>Deja un comentario</h3>
+                    <form method="POST" class="comment-form" action="foro.php">
+                        <input type="hidden" name="idpost" value="<?php echo $post['idcontenido']; ?>">
+                        <textarea name="msgusuario" placeholder="Escribe tu comentario aquí..." required></textarea>
+                        <button type="submit">Publicar Comentario</button>
+                    </form>
             </article>
+            <?php endwhile; ?>
+
     </main>
     </main>
     <footer>

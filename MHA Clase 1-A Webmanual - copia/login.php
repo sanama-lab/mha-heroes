@@ -12,14 +12,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 1. Buscamos al usuario por su EMAIL (tu columna es 'mail')
     // Usamos backticks `` para la columna contraseña por la ñ
-    $stmt = $conn->prepare("SELECT idusuario, nombre, tipousuario, `contraseña` FROM usuario WHERE mail = ?");
+    $stmt = $conn->prepare("SELECT idusuario, nombre, tipousuario, `contrasena` FROM usuario WHERE mail = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
     if ($usuario = $resultado->fetch_assoc()) {
         // 2. VERIFICAR CONTRASEÑA
-        if (password_verify($pass, $usuario['contraseña'])) {
+        if (password_verify($pass, $usuario['contrasena'])) {
             $_SESSION['id']   = $usuario['idusuario'];
             $_SESSION['user'] = $usuario['nombre'];
             $_SESSION['rol']  = $usuario['tipousuario'];
