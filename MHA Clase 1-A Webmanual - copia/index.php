@@ -1,6 +1,7 @@
 <?php
 // Incluir el archivo de conexión a la base de datos
 session_start();
+include 'escudo.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -18,7 +19,7 @@ session_start();
         <h1>Bienvenidos a la Clase 1-A</h1>
         <p>El hogar de los futuros heroes.</p>
         <?php if (isset($_SESSION['user'])): ?>
-            <h1>Hola! <?php echo ($_SESSION['user']); ?></h1>
+            <h1>Hola! <?php echo ($_SESSION['user']); ?> <?php echo $_SERVER['REMOTE_ADDR']; ?></h1>
             <h1><?php echo ($_SESSION['rol']); ?></h1>
             <div class="auth-buttons">
                 <a href="logout.php" class="btn-logout">Cerrar sesión</a>
@@ -33,6 +34,7 @@ session_start();
             <div class="auth-buttons">
                 <a href="login.php" class="btn-login">Iniciar sesión</a>
                 <a href="registro.php" class="btn-register">Registrarse</a>
+                
                 </div>
         <?php endif; ?>
         

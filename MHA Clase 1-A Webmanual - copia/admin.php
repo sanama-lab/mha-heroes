@@ -1,20 +1,16 @@
 <?php
-
 require 'db.php';
 session_start();
 
-
 if (!isset($_SESSION['rol']) || ($_SESSION['rol']) != "admin" && ($_SESSION['rol']) != "moderador" ){
-
     header("location:index.php");
     exit();
 }
 
-$query = "SELECT idusuario, nombre, mail, tipousuario FROM usuario ORDER BY idusuario ASC";
+// Consultamos también la 'ultima_ip' para poder banearla
+$query = "SELECT idusuario, nombre, mail, tipousuario, ultima_ip FROM usuario ORDER BY idusuario ASC";
 $resultado = $conn->query($query);
 ?>
-
-
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -25,17 +21,11 @@ $resultado = $conn->query($query);
 <body>
 <header>
     <h1>ADMIN PANEL</h1>
-    
-    <div class="auth-buttons">
-        <a href="index.php" > < inicio</a>
-    </div>
-
+    <div class="auth-buttons"><a href="index.php"> < inicio</a></div>
 </header>
-
 <main>
     <section>
         <h2>LISTA DE USUARIOS REGISTRADOS</h2>
-        
         <table class="admin-table">
             <thead>
                 <tr>
@@ -46,10 +36,10 @@ $resultado = $conn->query($query);
                     <th style="padding: 5px;">Acciones</th>
                 </tr>
             </thead>
-            <tbody >
+            <tbody>
                 <?php while($row = $resultado->fetch_assoc()): ?>
                     <?php if ($row['tipousuario'] !== 'admin') { ?>
-                <tr >
+                <tr>
                     <td style="padding: 5px;"><?php echo $row['idusuario']; ?></td>
                     <td style="padding: 5px;"><?php echo htmlspecialchars($row['nombre']); ?></td> 
                     <td style="padding: 5px;"><?php echo htmlspecialchars($row['mail']); ?></td>
@@ -59,7 +49,7 @@ $resultado = $conn->query($query);
                         </span>
                     </td>
                     <td style="padding: 5px;">
-                        
+                        <?php if ($_SESSION['rol'] !== 'moderador') { ?>
                         <a href="cambiar_rol.php?id=<?php echo $row['idusuario']; ?>&rol=moderador" 
                            style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.5); border-radius: 7px; text-decoration: none;">
                            Hacer Moderador
@@ -68,13 +58,14 @@ $resultado = $conn->query($query);
                            style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;">
                            Hacer Usuario
                         </a>
-                        
-                        <?php if ($_SESSION['rol'] !== 'moderador') { ?>
-                        <a href="eliminar_usuario.php?id=<?php echo $row['idusuario']; ?>" 
-                           style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;">
-                           hacer polvo
-                        </a>
                         <?php } ?>
+                        
+                        <a href="banear.php?id=<?php echo $row['idusuario']; ?>" 
+                           style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;"
+                           onclick="return confirm('¿Estás seguro de que quieres (banear) a este usuario?')">
+                           banear 1 semana
+                        </a>
+                    </td>
                 </tr> 
                    <?php } ?>
                 <?php endwhile; ?>
@@ -82,10 +73,5 @@ $resultado = $conn->query($query);
         </table>
     </section>
 </main>
-
-<footer>
-    <p>PLUS ULTRA - Sistema de Gestión de Héroes</p>
-</footer>
-
 </body>
 </html>

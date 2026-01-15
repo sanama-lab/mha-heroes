@@ -1,6 +1,6 @@
 <?php
 require 'db.php'; // Conexión a la base de datos
-
+include 'escudo.php';
 $mensaje = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

@@ -1,7 +1,7 @@
 <?php
 require 'db.php';
 session_start();
-
+include 'escudo.php';
 // Línea extra de seguridad para que la "ñ" de la DB no falle
 $conn->set_charset("utf8mb4");
 
@@ -23,11 +23,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['id']   = $usuario['idusuario'];
             $_SESSION['user'] = $usuario['nombre'];
             $_SESSION['rol']  = $usuario['tipousuario'];
+            
+            // Guardar IP después de verificar credenciales (con prepared statement)
+            $ip_actual = $_SERVER['REMOTE_ADDR'];
+            $id_user = $usuario['idusuario'];
+            $stmt_ip = $conn->prepare("UPDATE usuario SET ultima_ip = ? WHERE idusuario = ?");
+            $stmt_ip->bind_param("si", $ip_actual, $id_user);
+            $stmt_ip->execute();
+            
             header("Location: index.php");
             exit();
         } else {
             $error = "Contraseña incorrecta.";
-        }
+        }   
     } else {
         $error = "El correo no está registrado.";
     }
