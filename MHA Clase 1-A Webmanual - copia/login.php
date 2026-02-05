@@ -2,7 +2,7 @@
 require 'db.php';
 session_start();
 include 'escudo.php';
-// Línea extra de seguridad para que la "ñ" de la DB no falle
+// Línea para la ñ
 $conn->set_charset("utf8mb4");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
