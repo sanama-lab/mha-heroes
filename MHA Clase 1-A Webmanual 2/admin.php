@@ -10,6 +10,15 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol']) != "admin" && ($_SESSION['rol
 // Consultamos también la 'ultima_ip' para poder banearla
 $query = "SELECT idusuario, nombre, mail, tipousuario, ultima_ip FROM usuario ORDER BY idusuario ASC";
 $resultado = $conn->query($query);
+
+// ver que usuarios ya están baneados para mostrar el boton de desbaneos solo a los que realmente estan baneados
+$query_baneados = "SELECT idusuario FROM baneos WHERE fecha_fin > NOW()";  
+$result_baneados = $conn->query($query_baneados);
+$baneados = [];
+while ($row_ban = $result_baneados->fetch_assoc()) {
+    $baneados[] = $row_ban['idusuario'];
+}
+
 ?>
 <html lang="es">
 <head>
@@ -62,9 +71,17 @@ $resultado = $conn->query($query);
                         
                         <a href="banear.php?id=<?php echo $row['idusuario']; ?>" 
                            style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;"
-                           onclick="return confirm('¿Estás seguro de que quieres (banear) a este usuario?')">
-                           banear 1 semana
+                           onclick="return confirm('¿Estás seguro de que quieres (banear) a este usuario?'  )">
+                           banear 7 dias
                         </a>
+                           <!-- El boton de desbaneos se muestra solo si la ip esta registrada y si esta en un estado de ban -->
+                        <?php if (!empty($row['ultima_ip']) && in_array($row['idusuario'], $baneados)) { ?>
+                        <a href="desbanear.php?id=<?php echo $row['idusuario']; ?>" 
+                           style="padding: 5px; margin: 5px; background:rgba(135, 135, 135, 0.6); border-radius: 7px; text-decoration: none;"
+                           onclick="return confirm('¿Estás seguro de que quieres desbanear a este usuario?')">
+                           desbanear
+                        </a>
+                        <?php } ?>
                     </td>
                 </tr> 
                    <?php } ?>

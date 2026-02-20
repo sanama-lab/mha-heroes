@@ -7,7 +7,7 @@ if (!isset($_SESSION['id'])){
     exit();
 }
 
-// --- LÓGICA DE FILTRADO ---
+// filtros
 $categoria_id = isset($_GET['cat']) ? $_GET['cat'] : null;
 $post_especifico_id = isset($_GET['idpost']) ? $_GET['idpost'] : null;
 
@@ -17,29 +17,29 @@ $query_base = "SELECT c.*, u.nombre as autor, cat.categ as categoria_nombre, i.i
                JOIN usuario u ON c.creadorpost = u.idusuario
                JOIN categoria cat ON c.categoria = cat.idcategoria
                LEFT JOIN imagen i ON c.idcontenido = i.cont";
-
-// 1. Si hay un post específico seleccionado
+               
+// Si hay un post específico seleccionado
 if ($post_especifico_id) {
     $query = $query_base . " WHERE c.idcontenido = " . intval($post_especifico_id);
 } 
-// 2. Si hay una categoría seleccionada
+// Si hay una categoría seleccionada
 elseif ($categoria_id) {
     $query = $query_base . " WHERE c.categoria = " . intval($categoria_id);
 } 
-// 3. Vista general (todos los posts)
+// Vista general 
 else {
     $query = $query_base . " ORDER BY c.fechapublicacion DESC";
 }
 
 $resultado = $conn->query($query);
 
-// --- LÓGICA DE INSERCIÓN DE COMENTARIOS (Tu código original) ---
+// Lineas para insertar comentario
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['msgusuario'])) {
-    $nombre = $_SESSION['user'];
+    $nombre = $_SESSION['mail']; // usamos mail porque si colocamos id solo podremos hacer 1 comentario por usuairo
     $idpost  = $_POST['idpost'];
     $mensaje_txt = $_POST['msgusuario'];
 
-    $query_ins = "INSERT INTO comentario (idpost, mensaje,creadorcom, fecha) VALUES (?, ?, ?, now())";
+    $query_ins = "INSERT INTO comentario (idpost, mensaje, creadorcom, fecha) VALUES (?, ?, ?, now())";
     $stmt = $conn->prepare($query_ins);
 
     if ($stmt) {
@@ -49,13 +49,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['msgusuario'])) {
                 $status_msg = "✅ Comentario publicado.";
             }
         } catch (Exception $e) {
-            $status_msg = "❌ Error al publicar.";
+            $status_msg = "❌ Error al publicar. Detalle: " . $e->getMessage();
         }
         $stmt->close();
     }
 }
-?>
+$query_comentarios = "SELECT cm.*, u.nombre as autor_comentario
+                   FROM comentario cm 
+                   JOIN usuario u ON cm.creadorcom = u.mail 
+                   WHERE cm.idpost = " . intval($post_especifico_id) . " 
+                   ORDER BY cm.fecha ASC";
 
+$resultado_comentario = $conn->query($query_comentarios);
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -69,16 +76,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['msgusuario'])) {
         <div class="header-content">
             <h1><a href="foro.php" style="color:white; text-decoration:none;">Foro Multimedia</a></h1>
             <div class="auth-buttons"><a href="index.php"> < inicio</a></div>
-            <form id="search-form">
-                <input type="text" placeholder="Buscar contenido...">
-                <button type="submit">Buscar</button>
-            </form>
         </div>
     </header>
 
     <main class="main-container">
         
-        <?php if (isset($status_msg)) echo "<p>$status_msg</p>"; ?>
+        <?php if (isset($status_msg)){ echo "<p>$status_msg</p>";
+        echo $nombre; echo $idpost; echo $mensaje_txt;
+        }
+        ?>
 
         <section id="publish-section">
             <?php while($post = $resultado->fetch_assoc()): ?>
@@ -122,8 +128,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['msgusuario'])) {
                     <?php endif; ?>
 
                     <?php if ($post_especifico_id): ?>
+
                         <div class="comment-section">
                             <h3>Comentarios</h3>
+                            <?php while($comentario = $resultado_comentario->fetch_assoc()): ?>
+                                <?php if ($comentario['estado'] !== 'no permitido'){ ?>
+                                <div class="comment" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                                    <strong><?php echo htmlspecialchars($comentario['autor_comentario']); ?></strong> 
+                                    <small><?php echo date("d/m/Y H:i", strtotime($comentario['fecha'])); ?></small>
+                                    <p><?php echo nl2br(htmlspecialchars($comentario['mensaje'])); ?></p>
+                                    <br>
+                                    <?php if ($_SESSION['rol'] === 'admin' || $_SESSION['rol'] === 'moderador' || $_SESSION['user'] === $comentario['autor_comentario']){ ?>
+                                    <div class="post-actions">
+                                        <a href="eliminar_comentario.php?id=<?php echo $comentario['idcomentario']; ?>" class="delete-btn" 
+                                           onclick="return confirm('¿Estás seguro?');">Eliminar Comentario</a>
+                                    </div>
+                                <?php } ?>
+                                </div>
+                                <?php } ?>
+                            <?php endwhile; ?>
                             <form method="POST" class="comment-form">
                                 <input type="hidden" name="idpost" value="<?php echo $post['idcontenido']; ?>">
                                 <textarea name="msgusuario" placeholder="Escribe tu comentario aquí..." required></textarea>
